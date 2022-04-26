@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Part 7: Visualize gene expression in IGV &mdash; metaT  documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Part 6: metaT-only assembly?" href="05_compareMetaTass.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> metaT
+            <img src="_static/mmm2-blue.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Sections:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="00_before.html">Part 0: Recap: what’s happened with the data so far?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="01_FC.html">Part 1: Generate gene/functional profiles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="02_visTG_genes.html">Part 2: Compare metaT &amp; metaG at gene level</a></li>
+<li class="toctree-l1"><a class="reference internal" href="03_visKO.html">Part 3: Compare metaT &amp; metaG at KO level</a></li>
+<li class="toctree-l1"><a class="reference internal" href="03b_visMotu.html">Part 4: Compare metaT &amp; metaG at mOTU level</a></li>
+<li class="toctree-l1"><a class="reference internal" href="04_extractBin.html">Part 5: Extract information for one MAG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="05_compareMetaTass.html">Part 6: metaT-only assembly?</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Part 7: Visualize gene expression in IGV</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">metaT</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Part 7: Visualize gene expression in IGV</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/06_visIGV.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="part-7-visualize-gene-expression-in-igv">
+<span id="visigv"></span><h1>Part 7: Visualize gene expression in IGV<a class="headerlink" href="#part-7-visualize-gene-expression-in-igv" title="Permalink to this headline"></a></h1>
+<p>For this part of the hands-on, you need to download some data to your computer to visualize it locally. These files are:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>the contigs of you genome of interest <code class="docutils literal notranslate"><span class="pre">/work/projects/embomicrobial2020/data/metaT/binning/&lt;SAMPLE&gt;/&lt;MAG&gt;.fasta.contigs.fa</span></code></p></li>
+<li><p>the .bed file you created in the last step</p></li>
+<li><p>the alignment files and their indices <code class="docutils literal notranslate"><span class="pre">/work/projects/embomicrobial2020/data/metaT/binning/&lt;SAMPLE&gt;/&lt;MAG&gt;.mt.bam</span></code>, <code class="docutils literal notranslate"><span class="pre">/work/projects/embomicrobial2020/data/metaT/binning/&lt;SAMPLE&gt;/&lt;MAG&gt;.mg.bam</span></code>, <code class="docutils literal notranslate"><span class="pre">/work/projects/embomicrobial2020/data/metaT/binning/&lt;SAMPLE&gt;/&lt;MAG&gt;.mt.bam.bai</span></code>, and <code class="docutils literal notranslate"><span class="pre">/work/projects/embomicrobial2020/data/metaT/binning/&lt;SAMPLE&gt;/&lt;MAG&gt;.mg.bam.bai</span></code></p></li>
+<li><p>the filtered GFF file <code class="docutils literal notranslate"><span class="pre">/work/projects/embomicrobial2020/data/metaT/annotations/&lt;SAMPLE&gt;/&lt;MAG&gt;.annotation_CDS_RNA_hmms.gff</span></code></p></li>
+</ul>
+</div></blockquote>
+<p><a class="reference external" href="https://software.broadinstitute.org/software/igv/download">IGV</a> is a graphical interface for genome visualization. You can run it on your computer. Here’s how you can install it: <a class="reference download internal" download="" href="_downloads/1183964ca9bf94965354f83b94d6da38/getIGV.pdf"><code class="xref download docutils literal notranslate"><span class="pre">get</span> <span class="pre">IGV</span></code></a>.</p>
+<p>Once you have installed IGV, you can open the GUI and follow the description <a class="reference download internal" download="" href="_downloads/3b95a6b861c02099c92f276c095427d7/runIGV.pdf"><code class="xref download docutils literal notranslate"><span class="pre">here</span></code></a> to visualize the MAG, the metagenomics and metatranscriptomics reads that map to it, the positions of the open reading frames, and the positions of the metatranscriptomics-only contigs we were able to recover in the last step.</p>
+<div class="admonition-tasks admonition">
+<p class="admonition-title">Tasks</p>
+<p>Explore the variation in coverage depth in the metagenome and metatranscriptome.</p>
+<p>Focus on the metatranscriptome: can you see polycistronic operons? Compare the pattern of coverage with metatransctiptomic reads to the positions of the metatranscriptome-assembled contigs. Do you see a pattern? Can you find positions with a surprising coverage depth?</p>
+<p>Use the search bar to find a gene with the KO annotation K00635. This is a key gene for the lipid-accumulating phenotype of <em>Microthrix parvicella</em> and the whole floating sludge community.</p>
+</div>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="05_compareMetaTass.html" class="btn btn-neutral float-left" title="Part 6: metaT-only assembly?" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Anna Heintz-Buschart, Patrick May.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

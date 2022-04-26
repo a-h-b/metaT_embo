@@ -1,0 +1,71 @@
+.. _fc:
+
+=========================================
+Part 1: Generate gene/functional profiles
+=========================================
+
+For this session, please access the HPC with X11-forwarding. (In mobaXterm, you need to check X11-Forwarding in the SSH session settings; on unix-systems, you add ``-Y`` to the ssh command). If you don't have either, you may also plot into a file which you open on your own compluter. 
+
+The data needed for this hands-on session sits in ``/work/projects/embomicrobial2020/data/``.
+
+.. code-block:: console
+
+   cd /work/projects/embomicrobial2020/data/metaT
+   ls -ltrh
+
+We have the data for a small number of samples from the time series from `this article <https://doi.org/10.1038/s41467-020-19006-2>`_ in this directory (labeled with the date). The first few steps of this hands-on session deal with per-sample analysis. Please pick a (sort of) random sample:
+
+.. code-block:: console
+
+   myIndex=$(($RANDOM % 5))
+   samples=("2011-07-08" "2011-08-29" "2011-10-12" "2011-11-29" "2012-01-19" "2012-03-08")
+   mySample=${samples[$myIndex]}
+   echo $mySample
+
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Extracting per-feature metatranscriptomics reads
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+As the first part of the session, we will use `feature counts <https://doi.org/10.1093/bioinformatics/btt656>`_ to extract the number of reads per called gene or per KO.
+The output of this hands-on will be written to the ``/scratch`` directory:
+
+.. code-block:: console
+
+   cd /scratch/users/$USER
+   mkdir metaT
+   cd metaT
+
+
+The idea of featureCounts is very simple: you supply the GFF file, which contains the positions of the genes (or open reading frames), and the `.bam file <https://www.samformat.info/sam-format-flag>`_, which contains for all the reads the positions where they map. Feature counts just counts how many reads map on each of the open reading frames. The numbers of reads per open reading frame can also be aggregated at the level of the same annotations, e.g. KOs.
+
+First, let's calculate the number of reads mapping per open reading frame:
+
+.. code-block:: console
+
+   conda activate /work/projects/embomicrobial2020/envs/featureCounts/
+   featureCounts -p -O -t CDS -g ID -o mt.CDS_counts.tsv -s 2 -a /work/projects/embomicrobial2020/data/metaT/annotations/$mySample/$mySample.annotation_CDS_RNA_hmms.gff -T 1 /work/projects/embomicrobial2020/data/metaT/mapping/$mySample/mt.reads.sorted.bam
+   featureCounts -p -O -t CDS -g ID -o mg.CDS_counts.tsv -s 0 -a /work/projects/embomicrobial2020/data/metaT/annotations/$mySample/$mySample.annotation_CDS_RNA_hmms.gff -T 1 /work/projects/embomicrobial2020/data/metaT/mapping/$mySample/mg.reads.sorted.bam
+
+Check ``featureCounts -h`` to understand the difference in the arguments of the two commands.
+
+As you can also see in the help, you could also run both analyses in one go and write the result to a single file.
+
+.. code-block:: console
+
+   conda activate /work/projects/embomicrobial2020/envs/featureCounts/
+   featureCounts -p -O -t CDS -g ID -o mgmt.CDS_counts.tsv -s 0,2 -a /work/projects/embomicrobial2020/data/metaT/annotations/$mySample/$mySample.annotation_CDS_RNA_hmms.gff -T 1 /work/projects/embomicrobial2020/data/metaT/mapping/$mySample/mg.reads.sorted.bam /work/projects/embomicrobial2020/data/metaT/mapping/$mySample/mt.reads.sorted.bam
+
+Your output (in ``mt.CDS_counts.tsv`` and ``mg.CDS_counts.tsv``) contains a line with the full call to featureCounts and a header line and then one line for all features in the GFF file. As you can see in the header line, the first field in every line gives the actual feature and the last column contains the number of reads per feature.
+
+To do the same for the open reading frames that were annotated with a KO, we first need to filter the GFF file, because featureCounts is a bit unflexible with its input. 
+
+.. code-block:: console
+
+   grep "KEGG=" /work/projects/embomicrobial2020/data/metaT/annotations/$mySample/$mySample.annotation_CDS_RNA_hmms.gff >> $mySample.annotation_KEGG.gff
+
+Then, you can run the featureCounts command using KEGG as the ``-g`` argument as above, but with the filtered GFF file as input. Name the output ``mgmt.KEGG_counts.tsv``, if you want to follow the next steps of the tutorial closely.
+
+.. admonition:: Comment
+
+   Files with counts generated in this way can be used for differential abundance analysis, e.g. by `DESeq2 <https://bioconductor.org/packages/devel/bioc/manuals/DESeq2/man/DESeq2.pdf>`_.

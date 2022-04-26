@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Part 6: metaT-only assembly? &mdash; metaT  documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Part 7: Visualize gene expression in IGV" href="06_visIGV.html" />
+    <link rel="prev" title="Part 5: Extract information for one MAG" href="04_extractBin.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> metaT
+            <img src="_static/mmm2-blue.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Sections:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="00_before.html">Part 0: Recap: what’s happened with the data so far?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="01_FC.html">Part 1: Generate gene/functional profiles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="02_visTG_genes.html">Part 2: Compare metaT &amp; metaG at gene level</a></li>
+<li class="toctree-l1"><a class="reference internal" href="03_visKO.html">Part 3: Compare metaT &amp; metaG at KO level</a></li>
+<li class="toctree-l1"><a class="reference internal" href="03b_visMotu.html">Part 4: Compare metaT &amp; metaG at mOTU level</a></li>
+<li class="toctree-l1"><a class="reference internal" href="04_extractBin.html">Part 5: Extract information for one MAG</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Part 6: metaT-only assembly?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="06_visIGV.html">Part 7: Visualize gene expression in IGV</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">metaT</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Part 6: metaT-only assembly?</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/05_compareMetaTass.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="part-6-metat-only-assembly">
+<span id="compareass"></span><h1>Part 6: metaT-only assembly?<a class="headerlink" href="#part-6-metat-only-assembly" title="Permalink to this headline"></a></h1>
+<p>You may have only metatranscriptomic reads and wonder what you can do with them. In this part of the hands-on session, you can compare a metatranscriptomics-only assembly with the integrated metagenomics and metatranscriptomics assembly. We have picked the most dominant MAG from the dataset as an example.</p>
+<p>Metatranscriptomics-only assemblies can be found in <code class="docutils literal notranslate"><span class="pre">/work/projects/embomicrobial2020/data/metaT/assemblies/$mySample/final.contigs.fa</span></code>.</p>
+<p>Information for the example MAG is in <code class="docutils literal notranslate"><span class="pre">/work/projects/embomicrobial2020/data/metaT/binning/$mySample/</span></code>.</p>
+<p>To compare the contigs from the metaT-only assembly to the MAG, you can use nucmer (make sure you request sufficient cpus (8) in your interactive slurm job):</p>
+<div class="highlight-Console notranslate"><div class="highlight"><pre><span></span><span class="go">conda activate /work/projects/embomicrobial2020/envs/mummer4</span>
+<span class="go">cpus=8</span>
+<span class="go">sample=2011-07-08</span>
+
+<span class="go">ref=final.contigs.fa</span>
+<span class="go">bin=`cat /work/projects/embomicrobial2020/data/metaT/binning/$sample/bins`</span>
+<span class="go">qry=$bin.contigs.fa</span>
+<span class="go">prefix=$sample.genomalign</span>
+
+<span class="go">mkdir metaTGvsmetaT</span>
+<span class="go">cd metaTGvsmetaT</span>
+
+<span class="go">nucmer -t $cpus -p $prefix /work/projects/embomicrobial2020/data/metaT/assemblies/$sample/$qry /work/projects/embomicrobial2020/data/metaT/binning/$sample/$ref</span>
+
+<span class="go">delta=$prefix.delta</span>
+<span class="go">dnadiff -p $prefix -d $delta</span>
+<span class="gp">show-coords $</span>prefix.1delta &gt;<span class="nv">$prefix</span>.1delta.coords
+</pre></div>
+</div>
+<p>Here is a description of the output in <code class="docutils literal notranslate"><span class="pre">$prefix.1delta.coords</span></code> from the nucmer manual:
+[S1] start of the alignment region in the reference sequence [E1] end of the alignment region in the reference sequence [S2] start of the alignment region in the query sequence [E2] end of the alignment region in the query sequence [LEN 1] length of the alignment region in the reference sequence [LEN 2] length of the alignment region in the query sequence [% IDY] percent identity of the alignment [% SIM] percent similarity of the alignment (as determined by the BLOSUM scoring matrix) [% STP] percent of stop codons in the alignment [LEN R] length of the reference sequence [LEN Q] length of the query sequence [COV R] percent alignment coverage in the reference sequence [COV Q] percent alignment coverage in the query sequence [FRM] reading frame for the reference and query sequence alignments respectively [TAGS] the reference and query FastA IDs respectively. All output coordinates and lengths are relative to the forward strand of the reference DNA sequence.</p>
+<div class="admonition-excercise admonition">
+<p class="admonition-title">Excercise</p>
+<p>Adapt the nucmer, dnadiff and show-coords to run the same comparison in the opposite direction (metaTGvsmetaT).</p>
+</div>
+<p>You can already see from the numbers in <code class="docutils literal notranslate"><span class="pre">$mySample.genomalign.report</span></code> that only a part of the MAG that was assembled from metaG and metaT reads is also assembled from the transcriptome (the 53.3175% in the example below):</p>
+<div class="highlight-Console notranslate"><div class="highlight"><pre><span></span><span class="go">[Bases]</span>
+<span class="go">TotalBases                   3252111             59671729</span>
+<span class="go">AlignedBases       1733945(53.3175%)     1806914(3.0281%)</span>
+<span class="go">UnalignedBases     1518166(46.6825%)   57864815(96.9719%)</span>
+</pre></div>
+</div>
+<div class="admonition-excercise admonition">
+<p class="admonition-title">Excercise</p>
+<p>For the next step, extract the alignment information as .bed format, as shown in the code below.</p>
+</div>
+<div class="highlight-Console notranslate"><div class="highlight"><pre><span></span><span class="go">paste &lt;(cut -f 12 /work/projects/embomicrobial2020/data/metaT/binning/$mySample/genomealignment/metaTGvsmetaT/$mySample.genomalign.1coords) &lt;(cut -f 1,2 /work/projects/embomicrobial2020/data/metaT/binning/$mySample/genomealignment/metaTGvsmetaT/$mySample.genomalign.1coords)  &gt;&gt; $mySample.genomalign.bed</span>
+</pre></div>
+</div>
+<p>Copy the resulting file to your computer.</p>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="04_extractBin.html" class="btn btn-neutral float-left" title="Part 5: Extract information for one MAG" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="06_visIGV.html" class="btn btn-neutral float-right" title="Part 7: Visualize gene expression in IGV" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Anna Heintz-Buschart, Patrick May.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

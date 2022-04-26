@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Part 2: Compare metaT &amp; metaG at gene level &mdash; metaT  documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Part 3: Compare metaT &amp; metaG at KO level" href="03_visKO.html" />
+    <link rel="prev" title="Part 1: Generate gene/functional profiles" href="01_FC.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> metaT
+            <img src="_static/mmm2-blue.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Sections:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="00_before.html">Part 0: Recap: what’s happened with the data so far?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="01_FC.html">Part 1: Generate gene/functional profiles</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Part 2: Compare metaT &amp; metaG at gene level</a></li>
+<li class="toctree-l1"><a class="reference internal" href="03_visKO.html">Part 3: Compare metaT &amp; metaG at KO level</a></li>
+<li class="toctree-l1"><a class="reference internal" href="03b_visMotu.html">Part 4: Compare metaT &amp; metaG at mOTU level</a></li>
+<li class="toctree-l1"><a class="reference internal" href="04_extractBin.html">Part 5: Extract information for one MAG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="05_compareMetaTass.html">Part 6: metaT-only assembly?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="06_visIGV.html">Part 7: Visualize gene expression in IGV</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">metaT</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Part 2: Compare metaT &amp; metaG at gene level</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/02_visTG_genes.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="part-2-compare-metat-metag-at-gene-level">
+<span id="vistg-genes"></span><h1>Part 2: Compare metaT &amp; metaG at gene level<a class="headerlink" href="#part-2-compare-metat-metag-at-gene-level" title="Permalink to this headline"></a></h1>
+<p>In this and the next part of the tutorial, you’ll quickly visualize the results from the last step.</p>
+<p>First, check how many open reading frames there are in your sample:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">grep &quot;       CDS     &quot; -c /work/projects/embomicrobial2020/data/metaT/annotations/$mySample/$mySample.annotation_CDS_RNA_hmms.gff</span>
+</pre></div>
+</div>
+<p>Note this number.</p>
+<p>Then have a look at the correlation between metagenomics and metatranscriptomics read mapping to all the open reading frames in the dataset. Probably the easiest option is to plot this in R (R is installed in the featureCounts environment).</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">R</span>
+</pre></div>
+</div>
+<p>Within R, you can simply read the featureCounts results.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">mgmt &lt;- read.delim(&quot;mgmt.CDS_counts.tsv&quot;,skip=1,stringsAsFactors=F)[,c(1,7,8)]</span>
+<span class="go">colnames(mgmt)[2:3] &lt;- c(&quot;metaG&quot;,&quot;metaT&quot;)</span>
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Make sure that you entered the metaG input first into the featureCounts call, in order for the above column names assignment to be correct. You can check the top of the mgmt file, using the <code class="docutils literal notranslate"><span class="pre">head</span></code> function (either in the shell or in R).</p>
+</div>
+<p>You can first compare the number of genes that are in your featureCounts output to the number of CDS’ in the GFF file.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">dim(mgmt)</span>
+</pre></div>
+</div>
+<p>Then you can check, how many genes are not mapped by either metagenomics or metatranscriptomics reads:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">length(which(mgmt$metaG+mgmt$metaT==0))</span>
+</pre></div>
+</div>
+<p>You can also see, how many genes are detected in only metagenomics:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">length(which(mgmt$metaG&gt;=0 &amp; mgmt$metaT==0))</span>
+</pre></div>
+</div>
+<p>Can you add the code to figure out the number of genes that are only detected in metatranscriptomics? And the numbers of genes that are covered by both kinds of reads?</p>
+<p>You can also visualize these relationships.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go"> min0 &lt;- function(x){</span>
+<span class="go">   min(x[x&gt;0])</span>
+<span class="go"> }</span>
+
+<span class="go"> png(&quot;scatterplot.genes.png&quot;,width=8.5,height=8.5,units = &quot;cm&quot;,res=300,pointsize=7)</span>
+<span class="go"> par(&quot;mar&quot;=c(2.9,4,0.5,0.5),tcl=&quot;-0.3&quot;,mgp=c(1.7,0.5,0),lwd=0.5)</span>
+<span class="go"> plot(mgmt$metaG,mgmt$metaT,</span>
+<span class="go">     pch=16,cex=0.2,log=&quot;xy&quot;,</span>
+<span class="go">     las=1,xlim=c(min0(mgmt$metaG)/11,max(mgmt$metaG)/1.2),</span>
+<span class="go">     xaxs=&quot;i&quot;,</span>
+<span class="go">     ylim=c(min0(mgmt$metaT)/11,max(mgmt$metaT)/1.2),</span>
+<span class="go">     yaxs=&quot;i&quot;,</span>
+<span class="go">     ylab=&quot;&quot;,</span>
+<span class="go">     xlab=&quot;gene coverage (metaG reads)&quot;,cex.lab=9/7,axes=F)</span>
+<span class="go">points(mgmt$metaG[mgmt$metaT==0],</span>
+<span class="go">       rep(min0(mgmt$metaT)/10,length(which(mgmt$metaT==0))),</span>
+<span class="go">       pch=16,cex=0.2)</span>
+<span class="go">points(rep(min0(mgmt$metaG)/10,length(which(mgmt$metaG==0))),</span>
+<span class="go">       mgmt$metaT[mgmt$metaG==0],</span>
+<span class="go">       pch=16,cex=0.2)</span>
+<span class="go">mtext(&quot;gene coverage (metaT reads)&quot;,2,2.8,cex=9/7)</span>
+<span class="go">axis(1,</span>
+<span class="go">     at=c(min0(mgmt$metaG)/10,10^c(-3:8)),</span>
+<span class="go">     labels=c(0,format(10^c(-3:8),scientific=T,digits = 2)),lwd=0.5,las=1)</span>
+<span class="go">axis(2,at=c(min0(mgmt$metaT)/10,10^c(-3:8)),</span>
+<span class="go">     labels=c(0,format(10^c(-3:8),scientific=T,digits = 2)),lwd=0.5,las=1)</span>
+<span class="go">box(bty=&quot;o&quot;)</span>
+<span class="go">dev.off()</span>
+</pre></div>
+</div>
+<p>In the IMP3-report, the same visualization is given, but here the average coverage depth is used, and the genes are coloured by function:</p>
+<img alt="_images/Analysis_cov_scatter.png" src="_images/Analysis_cov_scatter.png" />
+<p>You can find the files containing the coverage information in <code class="docutils literal notranslate"><span class="pre">/work/projects/embomicrobial2020/data/$mySample/run1hybrid/Stats/mg/annotation/mg.gene_depth.txt</span></code>. Visualize this, too, if you want some practice with R.</p>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="01_FC.html" class="btn btn-neutral float-left" title="Part 1: Generate gene/functional profiles" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="03_visKO.html" class="btn btn-neutral float-right" title="Part 3: Compare metaT &amp; metaG at KO level" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Anna Heintz-Buschart, Patrick May.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

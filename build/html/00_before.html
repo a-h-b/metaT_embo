@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Part 0: Recap: what’s happened with the data so far? &mdash; metaT  documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Part 1: Generate gene/functional profiles" href="01_FC.html" />
+    <link rel="prev" title="Welcome to the metaT hands-on!" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> metaT
+            <img src="_static/mmm2-blue.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Sections:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Part 0: Recap: what’s happened with the data so far?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="01_FC.html">Part 1: Generate gene/functional profiles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="02_visTG_genes.html">Part 2: Compare metaT &amp; metaG at gene level</a></li>
+<li class="toctree-l1"><a class="reference internal" href="03_visKO.html">Part 3: Compare metaT &amp; metaG at KO level</a></li>
+<li class="toctree-l1"><a class="reference internal" href="03b_visMotu.html">Part 4: Compare metaT &amp; metaG at mOTU level</a></li>
+<li class="toctree-l1"><a class="reference internal" href="04_extractBin.html">Part 5: Extract information for one MAG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="05_compareMetaTass.html">Part 6: metaT-only assembly?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="06_visIGV.html">Part 7: Visualize gene expression in IGV</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">metaT</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Part 0: Recap: what’s happened with the data so far?</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/00_before.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="part-0-recap-what-s-happened-with-the-data-so-far">
+<span id="process"></span><h1>Part 0: Recap: what’s happened with the data so far?<a class="headerlink" href="#part-0-recap-what-s-happened-with-the-data-so-far" title="Permalink to this headline"></a></h1>
+<p>We’re starting this practical session off with an annotated assembly and some metatranscriptomic reads. You’ve previously seen how genes are annotated on (metagenomic) contigs. This information forms the basis of the interpretation of metatranscriptomics.</p>
+<p>The annotated assembly we are using in this practical is based on metagenomics and metatranscriptomics short reads. As a first step, they were trimmed to remove remainders of adapters and filtered for quality.</p>
+<p>In the next step, certain uninformative reads were removed. In our case, we removed contaminant sequences, like the phiX174 genome. This step could also target host genomes.</p>
+<div class="admonition-metat-specific-filtering admonition">
+<p class="admonition-title">metaT-specific filtering</p>
+<p>If you sequence metatranscriptomic reads after ribo-depletion, there will always be some rRNA-fragments left over. These are not representatitve of the metatranscriptomics information, so it’s best practice to remove them from the metaT reads, too.</p>
+</div>
+<p>We achieved <a class="reference internal" href="B_filter.html#rule-filter"><span class="std std-ref">rRNA removal</span></a> by mapping against an rRNA database.</p>
+<p>The next step was assembly. In our case, we use an <a class="reference internal" href="C_assembly.html#rule-ass"><span class="std std-ref">iterative (step-by-step) hybrid assembly</span></a> of metatranscriptomics and metagenomics reads: the assembly starts with a metatranscriptomics assembly. The rationale is that there are some strongly expressed (and hence deeply covered) genes and operons which are better represented by the metatranscriptome than the metagenome. The assembled transcripts form one input to the hybrid assembly, together with the metagenomics and metatranscriptomics reads. In our case, we then map the reads back to the hybrid-assembled contigs and extract reads that do not map, i.e. that are not used/represented by the assembly. We assemble these like the original set of reads and then merge both sets of contigs.</p>
+<img alt="_images/IMP_assembly.png" src="_images/IMP_assembly.png" />
+<p>This approach has been <a class="reference external" href="https://doi.org/10.1186/s13059-016-1116-8">shown</a> to lead to higher mapping rates, especially for the metatranscriptomic reads, than metagenomics-only assembly. There are however also situations, where you’d preferably assemble the metagenomics reads only – for example, if you expect to have intron-rich metatranscriptomes or if your metatranscriptome is sequenced too shallow.</p>
+<div class="admonition-what-if-i-have-only-metat-reads admonition">
+<p class="admonition-title">What if I have only metaT reads?</p>
+<p>It’s possible to assembly metatranscriptomic reads on their own, of course. We will look at what the metatranscriptomics assembly recovers <a class="reference internal" href="05_compareMetaTass.html#compareass"><span class="std std-ref">later</span></a>.</p>
+</div>
+<p>In any case, the next step will be to call genes and annotate them. We have used <a class="reference external" href="https://doi.org/10.1093/bioinformatics/btu153">prokka</a> and <a class="reference external" href="http://hmmer.org/">HMMER3</a> for <a class="reference internal" href="E_annotation.html#rule-a"><span class="std std-ref">this purpose</span></a>. In this hands-on session, we will use the KEGG orthologous group (KO) annotation. The annotation data is contained in a <a class="reference external" href="http://www.ensembl.org/info/website/upload/gff.html">GFF</a> file.</p>
+<p>The other information that is needed for this session is the read alignment information, that is which read maps to the assembly at which position. We’ve <a class="reference internal" href="D_mapping.html#rule-map"><span class="std std-ref">generated</span></a> this using <a class="reference external" href="http://bio-bwa.sourceforge.net/bwa.shtml">BWA-MEM</a>.</p>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to the metaT hands-on!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="01_FC.html" class="btn btn-neutral float-right" title="Part 1: Generate gene/functional profiles" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Anna Heintz-Buschart, Patrick May.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Part 1: Generate gene/functional profiles &mdash; metaT  documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Part 2: Compare metaT &amp; metaG at gene level" href="02_visTG_genes.html" />
+    <link rel="prev" title="Part 0: Recap: what’s happened with the data so far?" href="00_before.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> metaT
+            <img src="_static/mmm2-blue.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Sections:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="00_before.html">Part 0: Recap: what’s happened with the data so far?</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Part 1: Generate gene/functional profiles</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#extracting-per-feature-metatranscriptomics-reads">Extracting per-feature metatranscriptomics reads</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="02_visTG_genes.html">Part 2: Compare metaT &amp; metaG at gene level</a></li>
+<li class="toctree-l1"><a class="reference internal" href="03_visKO.html">Part 3: Compare metaT &amp; metaG at KO level</a></li>
+<li class="toctree-l1"><a class="reference internal" href="03b_visMotu.html">Part 4: Compare metaT &amp; metaG at mOTU level</a></li>
+<li class="toctree-l1"><a class="reference internal" href="04_extractBin.html">Part 5: Extract information for one MAG</a></li>
+<li class="toctree-l1"><a class="reference internal" href="05_compareMetaTass.html">Part 6: metaT-only assembly?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="06_visIGV.html">Part 7: Visualize gene expression in IGV</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">metaT</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Part 1: Generate gene/functional profiles</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/01_FC.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="part-1-generate-gene-functional-profiles">
+<span id="fc"></span><h1>Part 1: Generate gene/functional profiles<a class="headerlink" href="#part-1-generate-gene-functional-profiles" title="Permalink to this headline"></a></h1>
+<p>For this session, please access the HPC with X11-forwarding. (In mobaXterm, you need to check X11-Forwarding in the SSH session settings; on unix-systems, you add <code class="docutils literal notranslate"><span class="pre">-Y</span></code> to the ssh command). If you don’t have either, you may also plot into a file which you open on your own compluter.</p>
+<p>The data needed for this hands-on session sits in <code class="docutils literal notranslate"><span class="pre">/work/projects/embomicrobial2020/data/</span></code>.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cd /work/projects/embomicrobial2020/data/metaT</span>
+<span class="go">ls -ltrh</span>
+</pre></div>
+</div>
+<p>We have the data for a small number of samples from the time series from <a class="reference external" href="https://doi.org/10.1038/s41467-020-19006-2">this article</a> in this directory (labeled with the date). The first few steps of this hands-on session deal with per-sample analysis. Please pick a (sort of) random sample:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">myIndex=$(($RANDOM % 5))</span>
+<span class="go">samples=(&quot;2011-07-08&quot; &quot;2011-08-29&quot; &quot;2011-10-12&quot; &quot;2011-11-29&quot; &quot;2012-01-19&quot; &quot;2012-03-08&quot;)</span>
+<span class="go">mySample=${samples[$myIndex]}</span>
+<span class="go">echo $mySample</span>
+</pre></div>
+</div>
+<section id="extracting-per-feature-metatranscriptomics-reads">
+<h2>Extracting per-feature metatranscriptomics reads<a class="headerlink" href="#extracting-per-feature-metatranscriptomics-reads" title="Permalink to this headline"></a></h2>
+<p>As the first part of the session, we will use <a class="reference external" href="https://doi.org/10.1093/bioinformatics/btt656">feature counts</a> to extract the number of reads per called gene or per KO.
+The output of this hands-on will be written to the <code class="docutils literal notranslate"><span class="pre">/scratch</span></code> directory:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cd /scratch/users/$USER</span>
+<span class="go">mkdir metaT</span>
+<span class="go">cd metaT</span>
+</pre></div>
+</div>
+<p>The idea of featureCounts is very simple: you supply the GFF file, which contains the positions of the genes (or open reading frames), and the <a class="reference external" href="https://www.samformat.info/sam-format-flag">.bam file</a>, which contains for all the reads the positions where they map. Feature counts just counts how many reads map on each of the open reading frames. The numbers of reads per open reading frame can also be aggregated at the level of the same annotations, e.g. KOs.</p>
+<p>First, let’s calculate the number of reads mapping per open reading frame:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">conda activate /work/projects/embomicrobial2020/envs/featureCounts/</span>
+<span class="go">featureCounts -p -O -t CDS -g ID -o mt.CDS_counts.tsv -s 2 -a /work/projects/embomicrobial2020/data/metaT/annotations/$mySample/$mySample.annotation_CDS_RNA_hmms.gff -T 1 /work/projects/embomicrobial2020/data/metaT/mapping/$mySample/mt.reads.sorted.bam</span>
+<span class="go">featureCounts -p -O -t CDS -g ID -o mg.CDS_counts.tsv -s 0 -a /work/projects/embomicrobial2020/data/metaT/annotations/$mySample/$mySample.annotation_CDS_RNA_hmms.gff -T 1 /work/projects/embomicrobial2020/data/metaT/mapping/$mySample/mg.reads.sorted.bam</span>
+</pre></div>
+</div>
+<p>Check <code class="docutils literal notranslate"><span class="pre">featureCounts</span> <span class="pre">-h</span></code> to understand the difference in the arguments of the two commands.</p>
+<p>As you can also see in the help, you could also run both analyses in one go and write the result to a single file.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">conda activate /work/projects/embomicrobial2020/envs/featureCounts/</span>
+<span class="go">featureCounts -p -O -t CDS -g ID -o mgmt.CDS_counts.tsv -s 0,2 -a /work/projects/embomicrobial2020/data/metaT/annotations/$mySample/$mySample.annotation_CDS_RNA_hmms.gff -T 1 /work/projects/embomicrobial2020/data/metaT/mapping/$mySample/mg.reads.sorted.bam /work/projects/embomicrobial2020/data/metaT/mapping/$mySample/mt.reads.sorted.bam</span>
+</pre></div>
+</div>
+<p>Your output (in <code class="docutils literal notranslate"><span class="pre">mt.CDS_counts.tsv</span></code> and <code class="docutils literal notranslate"><span class="pre">mg.CDS_counts.tsv</span></code>) contains a line with the full call to featureCounts and a header line and then one line for all features in the GFF file. As you can see in the header line, the first field in every line gives the actual feature and the last column contains the number of reads per feature.</p>
+<p>To do the same for the open reading frames that were annotated with a KO, we first need to filter the GFF file, because featureCounts is a bit unflexible with its input.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">grep &quot;KEGG=&quot; /work/projects/embomicrobial2020/data/metaT/annotations/$mySample/$mySample.annotation_CDS_RNA_hmms.gff &gt;&gt; $mySample.annotation_KEGG.gff</span>
+</pre></div>
+</div>
+<p>Then, you can run the featureCounts command using KEGG as the <code class="docutils literal notranslate"><span class="pre">-g</span></code> argument as above, but with the filtered GFF file as input. Name the output <code class="docutils literal notranslate"><span class="pre">mgmt.KEGG_counts.tsv</span></code>, if you want to follow the next steps of the tutorial closely.</p>
+<div class="admonition-comment admonition">
+<p class="admonition-title">Comment</p>
+<p>Files with counts generated in this way can be used for differential abundance analysis, e.g. by <a class="reference external" href="https://bioconductor.org/packages/devel/bioc/manuals/DESeq2/man/DESeq2.pdf">DESeq2</a>.</p>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="00_before.html" class="btn btn-neutral float-left" title="Part 0: Recap: what’s happened with the data so far?" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="02_visTG_genes.html" class="btn btn-neutral float-right" title="Part 2: Compare metaT &amp; metaG at gene level" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Anna Heintz-Buschart, Patrick May.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
