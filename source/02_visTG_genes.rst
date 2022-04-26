@@ -10,7 +10,7 @@ First, check how many open reading frames there are in your sample:
 
 .. code-block:: console
 
-   grep "       CDS     " -c /work/projects/embomicrobial2020/data/metaT/annotations/$mySample/$mySample.annotation_CDS_RNA_hmms.gff
+   grep -P "\tCDS\t" -c /work/projects/embomicrobial2020/data/metaT/annotations/$mySample/$mySample.annotation_CDS_RNA_hmms.gff
 
 Note this number.
 
