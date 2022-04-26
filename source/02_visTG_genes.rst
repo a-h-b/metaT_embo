@@ -42,7 +42,7 @@ Then you can check, how many genes are not mapped by either metagenomics or meta
 
 .. code-block:: console
 
-   length(which(mgmt$metaG+mgmt$metaT==0))
+   length(which(mgmt$metaG==0 & mgmt$metaT==0))
 
 You can also see, how many genes are detected in only metagenomics:
 
