@@ -48,7 +48,7 @@ You can also see, how many genes are detected in only metagenomics:
 
 .. code-block:: console
 
-   length(which(mgmt$metaG>=0 & mgmt$metaT==0))
+   length(which(mgmt$metaG>0 & mgmt$metaT==0))
 
 Can you add the code to figure out the number of genes that are only detected in metatranscriptomics? And the numbers of genes that are covered by both kinds of reads?
 
