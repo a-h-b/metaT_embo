@@ -39,7 +39,7 @@ Here is a description of the output in ``$prefix.1delta.coords`` from the nucmer
 
    Adapt the nucmer, dnadiff and show-coords to run the same comparison in the opposite direction (metaTGvsmetaT).
 
-You can already see from the numbers in ``$mySample.genomalign.report`` that only a part of the MAG that was assembled from metaG and metaT reads is also assembled from the transcriptome (the 53.3175% in the example below):
+You can already see from the numbers in ``$sample.genomalign.report`` that only a part of the MAG that was assembled from metaG and metaT reads is also assembled from the transcriptome (the 53.3175% in the example below):
 
 .. code:: Console
 
@@ -54,6 +54,6 @@ You can already see from the numbers in ``$mySample.genomalign.report`` that onl
 
 .. code:: Console
 
-   paste <(cut -f 12 /work/projects/embomicrobial2020/data/metaT/binning/$mySample/genomealignment/metaTGvsmetaT/$mySample.genomalign.1coords) <(cut -f 1,2 /work/projects/embomicrobial2020/data/metaT/binning/$mySample/genomealignment/metaTGvsmetaT/$mySample.genomalign.1coords)  >> $mySample.genomalign.bed 
+   paste <(cut -f 12 /work/projects/embomicrobial2020/data/metaT/binning/$sample/genomealignment/metaTGvsmetaT/$sample.genomalign.1coords) <(cut -f 1,2 /work/projects/embomicrobial2020/data/metaT/binning/$sample/genomealignment/metaTGvsmetaT/$sample.genomalign.1coords)  >> $sample.genomalign.bed 
 
 Copy the resulting file to your computer.
