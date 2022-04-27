@@ -26,7 +26,7 @@ To compare the contigs from the metaT-only assembly to the MAG, you can use nucm
    mkdir metaTGvsmetaT
    cd metaTGvsmetaT
 
-   nucmer -t $cpus -p $prefix /work/projects/embomicrobial2020/data/metaT/assemblies/$sample/$qry /work/projects/embomicrobial2020/data/metaT/binning/$sample/$ref
+   nucmer -t $cpus -p $prefix /work/projects/embomicrobial2020/data/metaT/binning/$sample/$qry /work/projects/embomicrobial2020/data/metaT/assemblies/$sample/$ref
 
    delta=$prefix.delta
    dnadiff -p $prefix -d $delta
